@@ -1,0 +1,44 @@
+{
+  "parser": "babel-eslint",
+  "extends": [
+    "airbnb"
+  ],
+  "plugins": [
+    "react",
+    "jsx-a11y",
+    "import",
+    "react-hooks"
+  ],
+  "env": {
+    "es6": true,
+    "browser": true
+  },
+  "parserOptions": {
+    "ecmaVersion": 2017,
+    "ecmaFeatures": {
+      "jsx": true
+    },
+    "sourceType": "module"
+  },
+  "rules": {
+    "no-plusplus": "warn",
+    "max-len": "warn",
+    "global-require": "off",
+    "comma-dangle": "off",
+    "no-underscore-dangle": ["error", { "allow": ["_id"] }],
+    "react/jsx-filename-extension": [1, { "extensions": [".js", ".jsx"] }],
+    "react/sort-comp": "warn",
+    "react/forbid-prop-types": "off",
+    "react/no-did-mount-set-state": "warn",
+    "import/no-dynamic-require": "off",
+    "no-use-before-define": "off",
+    "no-unused-vars": "warn",
+    "camelcase": "off",
+    "no-console": "off",
+    "import/prefer-default-export": "off",
+    "prefer-destructuring": "warn",
+    "react/no-array-index-key": "warn",
+    "react-hooks/rules-of-hooks": "error",
+    "class-methods-use-this": "off"
+  }
+}
