@@ -1,23 +1,22 @@
 import styled from 'styled-components';
 import posed from 'react-pose';
-import * as S from '../../styles/stylesMain';
 
 import { appParams } from '../../helpers/parameters';
+import * as S from '../../styles/stylesMain';
 
 const { interfaceFadeDelay, interfaceAnimationStaggerDelay } = appParams;
 
 // ===================================================================
 // StyledComponents
 const ControlPanel = styled.div`
+  position: relative;
   margin-top: 10px;
   padding-left: 10px;
-  background-color: #000;
-  background: #000;
+  background-color: rgba(0, 0, 0, 0.65);
   border: 1px solid #777;
-  border-radius: 8px;
+  border-radius: ${props => props.theme.shape.borderRadius}px;
   padding: 10px;
 `;
-// note: import the theme for border-radius
 
 const NavSection = styled.div`
   display: flex;
@@ -28,13 +27,11 @@ const NavSection = styled.div`
 
 const NavComponent = styled.div`
   min-width: 80;
-  background-color: #000;
 `;
 
 const SliderContainer = styled.div`
   display: flex;
   align-items: center;
-  background-color: #000;
 `;
 
 const ColorSelectContainer = styled.div`
@@ -42,7 +39,6 @@ const ColorSelectContainer = styled.div`
   align-items: center;
   justify-content: space-between;
   width: 100%;
-  background-color: #000;
 `;
 
 const LogoIcon = styled.img`
@@ -50,6 +46,16 @@ const LogoIcon = styled.img`
   margin-left: 5px;
   margin-top: 5px;
   opacity: ${props => (props.isShowingColorControls ? 1 : 0.5)};
+`;
+
+const ControlsContainer = styled.div`
+  position: relative;
+`;
+
+const Loader = styled.div`
+  position: absolute;
+  bottom: 0px;
+  right: 0px;
 `;
 
 // ===================================================================
@@ -85,6 +91,8 @@ const PosedNavComponent = posed(NavComponent)({
   }
 });
 
+const PosedControlsContainer = posed(ControlsContainer)({});
+
 const PosedControlPanel = posed(ControlPanel)({
   hidden2: {
     opacity: 0.01,
@@ -110,16 +118,20 @@ const PosedControlPanel = posed(ControlPanel)({
 });
 
 // global styles imported then passed to export
-const { SectionTitle, SectionSubTitle } = S;
+const { SectionTitle, SectionSubTitle, TextHighlight } = S;
 
 export {
   ColorSelectContainer,
+  ControlsContainer,
+  Loader,
   LogoIcon,
   NavComponent,
   PosedControlPanel,
+  PosedControlsContainer,
   PosedNavComponent,
   PosedNavSection,
   SectionSubTitle,
   SectionTitle,
-  SliderContainer
+  SliderContainer,
+  TextHighlight
 };

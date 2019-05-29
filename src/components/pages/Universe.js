@@ -1,9 +1,8 @@
 import React, { useEffect, useState, useRef } from 'react';
+import PropTypes from 'prop-types';
 import * as THREE from 'three-full';
-import styled from 'styled-components';
 import { tween, easing } from 'popmotion';
-// import useToggle from 'react-use-toggle';
-import OrbitControls from '../../lib/threejs/OrbitControls';
+import OrbitControls from '../../lib/threejs/OrbitControls'; // modded version of OrbitControls
 
 import { getPositions, getDistances, getNearestNeighbours } from '../../services/PointManager';
 import { loadAllTextures } from '../../services/ImageLoader';
@@ -22,7 +21,7 @@ import {
 } from '../../helpers/parameters';
 import { mapInfo } from '../../helpers/mapInfo';
 import { colorPalettes7 } from '../../helpers/colors';
-import * as S from '../../styles/stylesMain';
+import * as S from './Universe.styles';
 
 const geometry = [];
 const materials = [];
@@ -34,9 +33,13 @@ let galaxyImageData = [];
 let scene = {};
 let isAutoRotating = false; // why not work as state var?
 
-function Universe() {
-  let mouseX = 0;
-  let mouseY = 0;
+const propTypes = {
+  theme: PropTypes.object.isRequired
+};
+
+function Universe({ theme }) {
+  // let mouseX = 0;
+  // let mouseY = 0;
   let renderer = {};
   let frameId = 0;
   let windowHalfX = window.innerWidth / 2;
@@ -120,7 +123,6 @@ function Universe() {
     createRenderer();
     addListeners();
     onZoom();
-    // initKeyboardInput();
     start();
   }, [imageTextures]);
 
@@ -358,8 +360,8 @@ function Universe() {
   }
 
   function onDocumentMouseMove(event) {
-    mouseX = event.clientX - windowHalfX;
-    mouseY = event.clientY - windowHalfY;
+    // mouseX = event.clientX - windowHalfX;
+    // mouseY = event.clientY - windowHalfY;
   }
 
   function onToggleColor() {
@@ -392,13 +394,11 @@ function Universe() {
   }
 
   function onZoom() {
-    // console.log('zoom');
     tween({
       to: 1,
       duration: 800,
       ease: easing.linear
     }).start((value) => {
-      // console.log(value);
       controls.dollyOut(0.95);
     });
   }
@@ -430,10 +430,10 @@ function Universe() {
 
   return (
     <S.Page>
-      <PageContainer>
-        <Viewport>
-          <ThreeJSContainer ref={mount} />
-          <Header>
+      <S.PageContainer>
+        <S.Viewport>
+          <S.ThreeJSContainer ref={mount} />
+          <S.Header>
             <NavigationHeader
               coloringMethod={coloringMethod}
               colorThemeIndex={colorThemeIndex}
@@ -451,45 +451,13 @@ function Universe() {
               onToggleAutoRotate={onToggleAutoRotate}
               onZoom={onZoom}
             />
-          </Header>
-        </Viewport>
-        <Footer>{/* */}</Footer>
-      </PageContainer>
+          </S.Header>
+        </S.Viewport>
+        <S.Footer>{/* */}</S.Footer>
+      </S.PageContainer>
     </S.Page>
   );
 }
-
-// StyledComponents
-const PageContainer = styled.div`
-  position: absolute;
-  left: 0px;
-`;
-const Viewport = styled.div`
-  display: flex;
-  width: 100%;
-  min-height: 600px;
-  min-width: 800px;
-  position: relative;
-  top: 0;
-  left: 0;
-`;
-const ThreeJSContainer = styled.div`
-  width: 100%;
-  height: 100%;
-  position: relative;
-  top: 0;
-  left: 0;
-`;
-const Header = styled.div`
-  display: flex;
-  position: absolute;
-  top: 0px;
-  left: 0px;
-`;
-const Footer = styled.div`
-  height: 50px;
-  text-align: center;
-  margin: 20px;
-`;
+Universe.propTypes = propTypes;
 
 export default Universe;

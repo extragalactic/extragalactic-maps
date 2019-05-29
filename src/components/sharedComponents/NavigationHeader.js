@@ -1,21 +1,21 @@
 import React, { useState } from 'react';
 import PropTypes from 'prop-types';
-import styled from 'styled-components';
 import Button from '@material-ui/core/Button';
 import MenuItem from '@material-ui/core/MenuItem';
 import Select from '@material-ui/core/Select';
 import Slider from '@material-ui/lab/Slider';
 import Switch from '@material-ui/core/Switch';
-import ToggleButton from '@material-ui/lab/ToggleButton';
-import { withStyles } from '@material-ui/core/styles';
+import Loader from 'react-loader-spinner';
+import { withStyles, withTheme } from '@material-ui/core/styles';
 import { PoseGroup } from 'react-pose';
 import { Link } from 'react-router-dom';
+import { compose } from 'recompose';
 
+import ColorSelectorWidget from './ColorSelectorWidget';
 import { numberWithCommas } from '../../utils/tools';
 import { sceneParams } from '../../helpers/parameters';
 import { coloringMethods } from '../../helpers/constants';
 import { mapInfo } from '../../helpers/mapInfo';
-import ColorSelectorWidget from './ColorSelectorWidget';
 import * as S from './NavigationHeader.styles';
 
 // Material-UI styles
@@ -64,7 +64,8 @@ const propTypes = {
   onToggleAutoRotate: PropTypes.func.isRequired,
   onToggleColor: PropTypes.func.isRequired,
   onZoom: PropTypes.func.isRequired,
-  pointSize: PropTypes.number.isRequired
+  pointSize: PropTypes.number.isRequired,
+  theme: PropTypes.object.isRequired
 };
 
 function NavigationHeader({
@@ -83,7 +84,8 @@ function NavigationHeader({
   onToggleAutoRotate,
   onToggleColor,
   onZoom,
-  pointSize
+  pointSize,
+  theme
 }) {
   const {
     maxPanSpeed, maxPointSize, minPanSpeed, minPointSize
@@ -107,97 +109,118 @@ function NavigationHeader({
         src="/images/interface/spiral-icon-white.png"
         width="70"
       />
-      <S.PosedControlPanel pose={isShowingColorControls ? 'visible2' : 'hidden2'}>
-        <S.SectionSubTitle>Galaxy Class Map Viewer</S.SectionSubTitle>
-        <S.SectionTitle>{`${mapInfo[mapType].name} Extragalactic Map`}</S.SectionTitle>
-        <div>{numPoints > 0 ? `${numberWithCommas(numPoints)} Galaxies` : 'Loading...'}</div>
-        <S.ColorSelectContainer>
-          <S.PosedNavComponent key="colorControl">
-            Use Color:
-            <Switch
-              checked={isUsingColor}
-              color="primary"
-              onChange={onToggleColor}
-              value={isUsingColor}
-            />
-          </S.PosedNavComponent>
-          <PoseGroup>
-            <S.PosedNavSection key="navSection" pose={isUsingColor ? 'visible' : 'hidden'}>
-              <S.PosedNavComponent key="coloringMethodControls">
-                <Select
-                  className={classes.select}
-                  inputProps={{
-                    name: 'coloringMethod',
-                    id: 'color-method'
-                  }}
-                  onChange={onChangeColoringMethod}
-                  value={coloringMethod}
-                >
-                  {Object.keys(coloringMethods).map((colorMethod, i) => (
-                    <MenuItem
-                      value={colorMethod}
-                      key={`colorMethod${i}`}
-                      className={colorMethod === i ? classes.selected : classes.root}
-                    >
-                      {coloringMethods[colorMethod]}
-                    </MenuItem>
-                  ))}
-                </Select>
-              </S.PosedNavComponent>
-              <S.PosedNavComponent key="colorThemeControls">
-                <ColorSelectorWidget
-                  colorThemeIndex={colorThemeIndex}
-                  onChangeTheme={onChangeTheme}
-                />
-              </S.PosedNavComponent>
-            </S.PosedNavSection>
-          </PoseGroup>
-        </S.ColorSelectContainer>
+      <S.PosedControlsContainer pose={isShowingColorControls ? 'visible2' : 'hidden2'}>
+        <S.PosedControlPanel theme={theme} key="controlPanel">
+          <S.SectionSubTitle>Galaxy Class Map Viewer</S.SectionSubTitle>
+          <S.SectionTitle>{`${mapInfo[mapType].name} Extragalactic Map`}</S.SectionTitle>
+          <div>
+            {numPoints > 0 ? (
+              `${numberWithCommas(numPoints)} Galaxies`
+            ) : (
+              <S.TextHighlight theme={theme}>Loading...</S.TextHighlight>
+            )}
+          </div>
+          <S.ColorSelectContainer>
+            <S.PosedNavComponent key="colorControl">
+              Use Color:
+              <Switch
+                checked={isUsingColor}
+                color="primary"
+                onChange={onToggleColor}
+                value={isUsingColor}
+              />
+            </S.PosedNavComponent>
+            <PoseGroup>
+              <S.PosedNavSection key="navSection" pose={isUsingColor ? 'visible' : 'hidden'}>
+                <S.PosedNavComponent key="coloringMethodControls">
+                  <Select
+                    className={classes.select}
+                    inputProps={{
+                      name: 'coloringMethod',
+                      id: 'color-method'
+                    }}
+                    onChange={onChangeColoringMethod}
+                    value={coloringMethod}
+                  >
+                    {Object.keys(coloringMethods).map((colorMethod, i) => (
+                      <MenuItem
+                        value={colorMethod}
+                        key={`colorMethod${i}`}
+                        className={colorMethod === i ? classes.selected : classes.root}
+                      >
+                        {coloringMethods[colorMethod]}
+                      </MenuItem>
+                    ))}
+                  </Select>
+                </S.PosedNavComponent>
+                <S.PosedNavComponent key="colorThemeControls">
+                  <ColorSelectorWidget
+                    colorThemeIndex={colorThemeIndex}
+                    onChangeTheme={onChangeTheme}
+                  />
+                </S.PosedNavComponent>
+              </S.PosedNavSection>
+            </PoseGroup>
+          </S.ColorSelectContainer>
 
-        <S.ColorSelectContainer>
-          <S.PosedNavComponent key="autoRotateControl">
-            Auto-Rotate:
-            <Switch
-              checked={isAutoRotating}
-              color="primary"
-              onChange={onToggleAutoRotate}
-              value={isAutoRotating}
-            />
-          </S.PosedNavComponent>
-        </S.ColorSelectContainer>
+          <S.ColorSelectContainer>
+            <S.PosedNavComponent key="autoRotateControl">
+              Auto-Rotate:
+              <Switch
+                checked={isAutoRotating}
+                color="primary"
+                onChange={onToggleAutoRotate}
+                value={isAutoRotating}
+              />
+            </S.PosedNavComponent>
+          </S.ColorSelectContainer>
 
-        <S.SliderContainer>
-          <div>Size:</div>
-          <Slider
-            classes={{ container: classes.slider }}
-            defaultValue={12}
-            max={maxPointSize}
-            min={minPointSize}
-            onChange={onChangeSize}
-            value={pointSize}
-          />
-        </S.SliderContainer>
-        <S.SliderContainer>
-          <div>Speed:</div>
-          <Slider
-            classes={{ container: classes.slider }}
-            defaultValue={7}
-            max={maxPanSpeed}
-            min={minPanSpeed}
-            onChange={onChangeSpeed}
-            value={moveSpeed}
-          />
-        </S.SliderContainer>
-        <Link to="/">
-          <Button className={classes.button} color="primary" onClick={() => {}} variant="contained">
-            Select New Map
-          </Button>
-        </Link>
-      </S.PosedControlPanel>
+          <S.SliderContainer>
+            <div>Size:</div>
+            <Slider
+              classes={{ container: classes.slider }}
+              defaultValue={12}
+              max={maxPointSize}
+              min={minPointSize}
+              onChange={onChangeSize}
+              value={pointSize}
+            />
+          </S.SliderContainer>
+          <S.SliderContainer>
+            <div>Speed:</div>
+            <Slider
+              classes={{ container: classes.slider }}
+              defaultValue={7}
+              max={maxPanSpeed}
+              min={minPanSpeed}
+              onChange={onChangeSpeed}
+              value={moveSpeed}
+            />
+          </S.SliderContainer>
+          <Link to="/">
+            <Button
+              className={classes.button}
+              color="primary"
+              onClick={() => {}}
+              variant="contained"
+            >
+              Select New Map
+            </Button>
+          </Link>
+        </S.PosedControlPanel>
+        <S.Loader key="loader">
+          {numPoints <= 0 && (
+            <Loader type="Audio" color={theme.palette.primary.main} height="100" width="100" />
+          )}
+        </S.Loader>
+      </S.PosedControlsContainer>
     </React.Fragment>
   );
 }
 
 NavigationHeader.propTypes = propTypes;
 
-export default withStyles(styles)(NavigationHeader);
+export default compose(
+  withTheme(),
+  withStyles(styles)
+)(NavigationHeader);

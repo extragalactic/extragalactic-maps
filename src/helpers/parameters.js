@@ -1,7 +1,8 @@
+// All parameters and their default values
 const appParams = {
-  runInBackground: false,
+  interfaceAnimationStaggerDelay: 120,
   interfaceFadeDelay: 150,
-  interfaceAnimationStaggerDelay: 120
+  runInBackground: false
 };
 const sceneParams = {
   alphaTest: 0.5,
@@ -15,7 +16,7 @@ const sceneParams = {
   minPointSize: 1,
   numParticles: 1500, // num particles for random option
   panSpeed: 3,
-  particleSize: 12,
+  particleSize: 9,
   pointReplicator: false,
   startIndex: 0,
   zoneSize: 3000 // location constraint for random option
@@ -28,8 +29,8 @@ const cameraParams = {
 };
 const materialParams = {
   applyBaseColor: false,
-  coloringMethod: 'ColorByDistance',
   colorPaletteIndex: 7,
+  coloringMethod: 'ColorByDistance',
   isUsingColorLUT: false,
   isUsingFullImageset: true
 };
